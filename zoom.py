@@ -101,6 +101,11 @@ def update_vertical_slider(event, v, z):
 
 if __name__ == "__main__":
 
+    try: # win 8.1
+        ctypes.windll.shcore.SetProcessDpiAwareness(2)
+    except: # win 8.0 and below
+        ctypes.windll.user32.SetProcessDPIAware()
+
     # Set up the tkinter window
     root = tk.Tk()
     root.title("I'm too blind to see this")
