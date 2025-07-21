@@ -12,6 +12,7 @@ PIL, TKinter
 
 Run the zoom.py file using the command `python zoom.py` and a window will appear on the screen
 
+Notes: This application is resizable with the image being able to resize as the window increases, currently the text will not expand with this but that is in progress
 
 # Features:
 

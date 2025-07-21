@@ -11,6 +11,10 @@ V_BOX_ORIGINAL = 200
 H_BOX_CONSTANT = 200
 H_BOX_ORIGINAL = 200
 
+CONSTANT = 1000
+IMAGE_HEIGHT = CONSTANT  # Height of the image to display
+IMAGE_WIDTH = CONSTANT   # Width of the image to display
+
 RATIO_CONSTANT = 0.5  # Adjust to resize the displayed image
 #inital setups
 currentx = 0
@@ -60,7 +64,7 @@ def update_image(label, rinfo2, rinfo3, rinfo4):
     img = capture_screen()
     
     # Resize for display if necessary (adjust dimensions)
-    img_resized = img.resize((400, 400))  # This is to make sure the image fits in the window
+    img_resized = img.resize((IMAGE_HEIGHT, IMAGE_WIDTH))  # This is to make sure the image fits in the window
     img_tk = ImageTk.PhotoImage(img_resized)
     
     # Update the label widget with the new image
@@ -99,6 +103,28 @@ def update_vertical_slider(event, v, z):
     V_BOX_CONSTANT = int(v.get() * 1/z.get())
     return
 
+resize_after_id = None
+
+# def actuallyResize(event):
+
+
+def resize_image(event):
+    global IMAGE_HEIGHT, IMAGE_WIDTH, resize_after_id
+    if event.widget != root:
+        return
+
+    global IMAGE_HEIGHT, IMAGE_WIDTH
+    # Update the image dimensions
+    
+    IMAGE_HEIGHT = int(event.width//6*5)
+    IMAGE_WIDTH = int(event.height - 4)
+    print(f"Resizing to {event.width}x{event.height}")
+
+    # Update the image dimensions
+    # actuallyResize(event)  # Update after 300 ms
+    # we can resize the text here as well
+
+
 if __name__ == "__main__":
 
     try: # win 8.1
@@ -109,8 +135,8 @@ if __name__ == "__main__":
     # Set up the tkinter window
     root = tk.Tk()
     root.title("I'm too blind to see this")
-
-
+    root.resizable(True, True)  # Allow resizing of the window
+    root.bind('<Configure>', resize_image)
     lFrame = tk.Frame(root)
     lFrame.pack(side = tk.LEFT)
     rFrame = tk.Frame(root)
@@ -119,7 +145,7 @@ if __name__ == "__main__":
     initial_img = capture_screen()
 
     # Resize the initial image for display
-    initial_img_resized = initial_img.resize((400, 400))  # Adjust as needed
+    initial_img_resized = initial_img.resize((IMAGE_HEIGHT, IMAGE_WIDTH))  # Adjust as needed
     img_tk = ImageTk.PhotoImage(initial_img_resized)
 
     # Create a label to display the image
@@ -129,23 +155,23 @@ if __name__ == "__main__":
 
 
     rlabel = tk.Label(rFrame, text = "Zoom Scale")
-    rlabel.pack()
+    rlabel.pack(expand=True, fill='both', padx = 50)
 
 
     rZoom = tk.Scale(rFrame, from_ = 1, to=10, orient = tk.HORIZONTAL, resolution = 0.1)
     rZoom.set(1) #Set the default value
     rZoom.bind("<ButtonRelease-1>", lambda event: update_zoom_slider(event, rZoom))
-    rZoom.pack()
+    rZoom.pack(expand=True, fill='both', padx = 50)
 
     rHBox = tk.Scale(rFrame, from_ = 10, to=500, orient = tk.HORIZONTAL, resolution = 10)
     rHBox.set(200) #Set the default value
     rHBox.bind("<ButtonRelease-1>", lambda event: update_horizontal_slider(event, rHBox, rZoom))
-    rHBox.pack()
+    rHBox.pack(expand=True, fill='both', padx = 50)
 
     rVBox = tk.Scale(rFrame, from_ = 10, to=500, orient = tk.HORIZONTAL, resolution = 10)
     rVBox.set(200) #Set the default value
     rVBox.bind("<ButtonRelease-1>", lambda event: update_vertical_slider(event, rVBox, rZoom))
-    rVBox.pack()
+    rVBox.pack(expand=True, fill='both', padx = 50)
 
     rinfo2 = tk.Label(rFrame, text = f"X: {currentx} Y: {currenty}", width = 20)
     rinfo2.pack()
